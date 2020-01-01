@@ -8,22 +8,22 @@ namespace BE
 {
     public class HostingUnit
     {
-        public readonly int HostingUnitKey;
-        private Host Owner { set; get; }
-        private string HostingUnitName { set; get; }
-        private bool[,] diary;
-        public HostingUnit()
-        {
-            diary = new bool [12,31];
-            Configurations.hostUnitKey ++; 
-            HostingUnitKey= Configurations.hostUnitKey; 
-        }
+        public long HostingUnitKey { set; get; }
+        public Host Owner { set; get; }
+        public string HostingUnitName { set; get; }
+        public bool[,] diary { set; get; }
+        public area areaOfUnit { set; get; }
+        public int price { set; get; }
+        public int numOfRoom { set; get; }
+
         public override string ToString()
         {
             string s = "";
             s += string.Format("Hosting UnitKey: {0}\n", HostingUnitKey)
                 + string.Format("Owner: {0}\n", Owner)
-                + string.Format("Hosting Unit Name: {0}\n", HostingUnitName);
+                + string.Format("Hosting Unit Name: {0}\n", HostingUnitName)
+                + string.Format("price: {0}\n", price)
+                + string.Format("num of room: {0}\n", numOfRoom);
             bool start = false;
             for (int i = 0; i < 12; i++)
             {

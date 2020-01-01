@@ -8,18 +8,12 @@ namespace BE
 {
     public class Order
     {
-        private int HostingUnitKey { set; get; }
-        private int GuestRequestKey { set; get; }
-        public readonly int OrderKey;
-
-        private statusOrder Status { set; get; }
-        private DateTime CreateDate { set; get; }
-        private DateTime OrderDate { set; get; }
-        Order()
-        {
-            Configurations.orderKey++;
-            OrderKey= Configurations.orderKey;
-        }
+        public long HostingUnitKey { set; get; }
+        public long GuestRequestKey { set; get; }
+        public long OrderKey { set; get; }
+        public statusOrder Status { set; get; }
+        public DateTime CreateDate { set; get; }
+        public DateTime OrderDate { set; get; }
         public override string ToString()
         {
             return string.Format("Hosting Unit Key: {0}\n", HostingUnitKey) +

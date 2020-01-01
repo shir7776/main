@@ -8,23 +8,25 @@ namespace BE
 {
     public class GuestRequest
     {
-        private static long GuestRequestKey ;
-        private string PrivateName{ set; get; }
-        private string FamilyName{ set; get; }
-        private string MailAddress{ set; get; }
-        private statusGusReq Status { set; get; }
-        private DateTime RegistrationDate{ get; set; }
-        private DateTime EntryDate{ set; get; }
-        private DateTime ReleaseDate{ get; set; }
-        private area Area{ set; get; }
-        private subArea SubArea{ set; get; }
-        private type Type{ set; get; }
-        private int Adults{ set ; get; }
-        private int Children{ set; get; }
-        private isNecessary Pool{ set; get; }
-        private isNecessary Jacuzzi { set; get; }
-        private isNecessary Garden { set; get; }
-        private isNecessary ChildrensAttractions { set; get; }
+        public long GuestRequestKey { get; set; }
+        
+        public string PrivateName { set; get; }
+        public string FamilyName { set; get; }
+        public string MailAddress { set; get; }
+        public statusGusReq Status { set; get; }
+        public DateTime RegistrationDate { get; set; }
+        public DateTime EntryDate { set; get; }
+        public DateTime ReleaseDate { get; set; }
+        public area Area { set; get; }
+        public subArea SubArea { set; get; }
+        public type Type { set; get; }
+        public int Adults { set; get; }
+        public int Children { set; get; }
+        public isNecessary Pool { set; get; }
+        public isNecessary Jacuzzi { set; get; }
+        public isNecessary Garden { set; get; }
+        public isNecessary ChildrensAttractions { set; get; }
+       
 
         public override string ToString()
         {

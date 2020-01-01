@@ -7,24 +7,28 @@ using BE;
 
 namespace DAL
 {
-    interface Idal
+    public interface Idal
     {
         #region customer reques func
-        void addCustomerReq(GuestRequest gs);
-         void updateCustomerReq(long GstReqKey);
+         void addCustomerReq(GuestRequest gs);
+         void updateCustomerReq(long gsKey, statusGusReq stat);
+        List<GuestRequest> getGuestRequestList();
         #endregion
+
         #region hosting unit func
         void addHostingUnit(HostingUnit hostunit);
-         void deleteHostingUnit(int HstUntKey);
-         void UpdateHostingUnit(int HstUntKey);
+        void deleteHostingUnit(HostingUnit HstUnt);
+        void UpdateHostingUnit(HostingUnit HstUnt);
+        List<HostingUnit> getHostingUnitList();
         #endregion
+
         #region order func
         void addOrder(Order ord);
-         void updateOrder(int OrdKey);
-        #endregion
-        List<HostingUnit> getHostingUnitList();
-        List<GuestRequest> getGuestRequestList();
+         void updateOrder(long orKey,statusOrder statO);
         List<Order> getOrderList();
-        List<BankAccount> getBankBranches();
+        #endregion
+
+
+        List<BankBranch> getBankBranches();
     }
 }

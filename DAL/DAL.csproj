@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DAL</RootNamespace>
     <AssemblyName>DAL</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Cloning.cs" />
+    <Compile Include="Dal_imp.cs" />
+    <Compile Include="FactoryDal.cs" />
     <Compile Include="Idal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -49,6 +52,10 @@
     <ProjectReference Include="..\BE\BE.csproj">
       <Project>{12a25273-9c80-409f-bd00-b926104e1513}</Project>
       <Name>BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DS\DS.csproj">
+      <Project>{7db16e81-1632-4b51-8fa6-d275379380cd}</Project>
+      <Name>DS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

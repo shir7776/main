@@ -7,12 +7,13 @@ using BE;
 
 namespace DS
 {
-    class DataSource
+    public class DataSource
     {
-        static List<Host> HostList;
-        static List<HostingUnit> HostingUnitList;
-        static List<Order> OrderList;
-        static List<GuestRequest> GuestRequestList;
-        static List<BankAccount> BankAccountList;
+        public static List<Host> HostList=new List<Host> { };
+
+        public static List<HostingUnit> HostingUnitList= new List<HostingUnit> {  };
+        public static List<Order> OrderList=new List<Order> {};
+        public static List<GuestRequest> GuestRequestList=new List<GuestRequest> {};
+        static List<BankBranch> BankAccountList=new List<BankBranch> {};
     }
 }

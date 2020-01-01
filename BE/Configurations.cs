@@ -8,10 +8,10 @@ namespace BE
 {
     public class Configurations
     {
-        public static int guestReqID = 10000000;
-        public static int hostKey = 0;
-        public static int hostUnitKey = 10000000;
-        public static int orderKey = 0;
-
+        public static long guestReqID = 10000000;
+        //public static int hostKey = 0;
+        public static long hostUnitKey = 10000000;
+        public static long orderKey = 10000000;
+        public static int amla = 10;
     }
 }
