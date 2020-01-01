@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,11 +20,11 @@ namespace BL
         /// <param name="end"></param>
         /// <param name="hu"></param>
         /// <returns></returns>
-        bool dateOk(DateTime start, DateTime end, HostingUnit hu)
+        public bool dateOk(DateTime start, DateTime end, HostingUnit hu)
         {
             int i = start.Month - 1, k = end.Month - 1;
             int j = start.Day - 1, s = end.Day - 1;
-            while (i != k && j != s)
+            while (i != k || j != s)
             {
                 if (hu.diary[i, j] == true)
                     return false;
@@ -53,9 +54,14 @@ namespace BL
         /// </summary>
         /// <param name="host"></param>
         /// <returns></returns>
-        public bool allowedSendReq(Host host)//(2)//לממש
+        public bool allowedSendReq(Order order)//(2)//לממש
         {
-            return true;
+            var hostingU = (from hosUn in dal.getHostingUnitList()
+                            where (order.HostingUnitKey == hosUn.HostingUnitKey)
+                            select hosUn).FirstOrDefault();
+            if (hostingU.Owner.CollectionClearance)
+                return true;
+            return false;
         }
         /// <summary>
         /// a func to check that all the dates are available from guest request
@@ -146,9 +152,13 @@ namespace BL
         /// if there is an open 
         /// </summary>
         /// <param name="gs"></param>
-        public void cantCencelAllowens(GuestRequest gs)//(9)//חסר מימוש
+        public bool canCencelAllowens(Host host)//(9)
         {
-
+            var ordList = (from order in dal.getOrderList()
+                           from hu in dal.getHostingUnitList()
+                           where order.HostingUnitKey == hu.HostingUnitKey && hu.Owner.HostKey == host.HostKey && order.Status == statusOrder.טרם_טופל
+                           select order).ToList();
+            return !ordList.Any();
         }
 
         /// <summary>
@@ -208,8 +218,8 @@ namespace BL
         public List<GuestRequest> guestWithCondition(GuestReqDelegate d)//(14)
         {
             var guesReq = (from gs in dal.getGuestRequestList()
-                          where d(gs)
-                          select gs).ToList();
+                           where d(gs)
+                           select gs).ToList();
             return guesReq;
         }
         /// <summary>
@@ -219,7 +229,7 @@ namespace BL
         /// <returns></returns>
         public int numOfOrders(GuestRequest gs)//(15)
         {
-            List<Order> listOrd = dal.getOrderList().FindAll( o=> o.GuestRequestKey == gs.GuestRequestKey);
+            List<Order> listOrd = dal.getOrderList().FindAll(o => o.GuestRequestKey == gs.GuestRequestKey);
             return listOrd.Count();
         }
         /// <summary>
@@ -227,12 +237,10 @@ namespace BL
         /// </summary>
         /// <param name="hostU"></param>
         /// <returns></returns>
-        
-        public int numOfClosedOrSentOrders(HostingUnit hostU)//(16)//קיים שאלה מה זה מספר הזמנות שנשלחו     *********************************************************************************************************************
+        public int numOfClosedOrSentOrders(HostingUnit hostU)//(16)
         {
-            List<Order> listOrd = dal.getOrderList().FindAll(o=> o.HostingUnitKey== hostU.HostingUnitKey && o.Status == statusOrder.נסגר_בהיענות_של_לקוח);
+            List<Order> listOrd = dal.getOrderList().FindAll(o => o.HostingUnitKey == hostU.HostingUnitKey && (o.Status == statusOrder.נסגר_בהיענות_של_לקוח || o.Status == statusOrder.נשלח_מייל));
             return listOrd.Count();
-            //send_mail
         }
         #region func by grouping
         /// <summary>
@@ -240,10 +248,10 @@ namespace BL
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public List<IGrouping<bool, GuestRequest>> groupGuestReqByArea(area a)//(17)
+        public List<IGrouping<area, GuestRequest>> groupGuestReqByArea()//(17)
         {
             var listByArea = (from gs in dal.getGuestRequestList()
-                              group gs by gs.Area == a).ToList();
+                              group gs by gs.Area).ToList();
             return listByArea;
         }
         /// <summary>
@@ -262,10 +270,10 @@ namespace BL
         /// </summary>
         /// <param name="numOfHostingUnits"></param>
         /// <returns></returns>
-        public List<IGrouping<int, Host>> groupByNumOfHostingUnits()//(19)😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃😃
+        public List<IGrouping<int, Host>> groupByNumOfHostingUnits()//(19)
         {
-            var listByNumOfUnit = (from gs in dal.getHostingUnitList()
-                                   group gs by gs.Owner.NumOfHostingUnit).ToList();
+            var listByNumOfUnit = (from hu in dal.getHostingUnitList()
+                                   group hu.Owner by hu.Owner.NumOfHostingUnit).ToList();
             return listByNumOfUnit;
         }
         /// <summary>
@@ -273,41 +281,125 @@ namespace BL
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public List<IGrouping<bool, HostingUnit>> groupHostUnitByArea(area a)//(20)
+        public List<IGrouping<area, HostingUnit>> groupHostUnitByArea()//(20)
         {
             var listByArea = (from gs in dal.getHostingUnitList()
-                              group gs by gs.areaOfUnit == a).ToList();
+                              group gs by gs.areaOfUnit).ToList();
             return listByArea;
         }
         #endregion
 
-
-        void addCustomerReq(GuestRequest gs)//מה צריך לבדןק? איך בודקים מייל ואיך בודקים אם ההמפתח קיים אם הוא עוד לא מאותחל
+        /// <summary>
+        /// a func that add guest request after checking the edges
+        /// </summary>
+        /// <param name="gs"></param>
+        public void addCustomerReq(GuestRequest gs)//מה צריך לבדןק? איך בודקים מייל ואיך בודקים אם ההמפתח קיים אם הוא עוד לא מאותחל
         {
-            if(isDateValid(gs.Clone().EntryDate,gs.Clone().ReleaseDate))
+            if (isDateValid(gs.Clone().EntryDate, gs.Clone().ReleaseDate))
             {
                 gs.RegistrationDate = new DateTime(2020, (DateTime.Today).Month, (DateTime.Today).Day);
                 dal.addCustomerReq(gs);
             }
         }
-        void updateCustomerReq(long gsKey, statusGusReq stat)
+        /// <summary>
+        /// a func to update guest request
+        /// </summary>
+        /// <param name="gsKey"></param>
+        /// <param name="stat"></param>
+        public void updateCustomerReq(long gsKey, statusGusReq stat)
         {
-            if (!(dal.getGuestRequestList().Any(gs1 => (gs1.Clone()).GuestRequestKey == gsKey)))
+            if (!(dal.getGuestRequestList().Any(gs1 => (gs1.GuestRequestKey == gsKey))))
                 throw new System.ArgumentException("request dont exist!");
             if (stat != statusGusReq.נסגר_כי_פג_תוקף && stat != statusGusReq.נסגר_על_ידי_האתר && stat != statusGusReq.פתוח)
                 throw new System.ArgumentException("dont have a status");
             dal.updateCustomerReq(gsKey, stat);
         }
-        List<GuestRequest> getGuestRequestList()
+        /// <summary>
+        /// a func that returns the guest request list
+        /// </summary>
+        /// <returns></returns>
+        public List<GuestRequest> getGuestRequestList()
         {
             return dal.getGuestRequestList();
-
         }
-        void addHostingUnit(HostingUnit hostunit)
+        /// <summary>
+        /// a func that adds a new host unit to the list
+        /// </summary>
+        /// <param name="hostunit"></param>
+        public void addHostingUnit(HostingUnit hostunit)
         {
-
+            dal.addHostingUnit(hostunit);
         }
-
-
+        /// <summary>
+        /// a func that deletes a host unit from the list
+        /// </summary>
+        /// <param name="HstUnt"></param>
+        public void deleteHostingUnit(HostingUnit HstUnt)
+        {
+            if (!(dal.getHostingUnitList().Any(hu => (hu.HostingUnitKey == HstUnt.HostingUnitKey))))
+                throw new System.ArgumentException("hosting unit dont exist!");
+            if (cantDel(HstUnt))
+                dal.deleteHostingUnit(HstUnt);
+            else
+                throw new System.ArgumentException("can not delete hosting unit becase there is an open order!");
+        }
+        /// <summary>
+        /// a func that updates hosting unit
+        /// </summary>
+        /// <param name="HstUnt"></param>
+        public void UpdateHostingUnit(HostingUnit HstUnt)
+        {
+            if (!(dal.getHostingUnitList().Any(hu => (hu.HostingUnitKey == HstUnt.HostingUnitKey))))
+                throw new System.ArgumentException("hosting unit dont exist!");
+            dal.UpdateHostingUnit(HstUnt);
+        }
+        /// <summary>
+        /// a func that returns the hosting unit list
+        /// </summary>
+        /// <returns></returns>
+        public List<HostingUnit> getHostingUnitList()
+        {
+            return dal.getHostingUnitList();
+        }
+        /// <summary>
+        /// a func to add an order to the list
+        /// </summary>
+        /// <param name="ord"></param>
+        public void addOrder(Order ord)
+        {
+            if (dal.getOrderList().Any(ord1 => (ord1.OrderKey == ord.OrderKey)))
+                throw new System.ArgumentException("order is exist");
+            ord.CreateDate = new DateTime(2020, (DateTime.Today).Month, (DateTime.Today).Day);
+            dal.addOrder(ord);
+        }
+        /// <summary>
+        /// a func to update order status
+        /// </summary>
+        /// <param name="orKey"></param>
+        /// <param name="statO"></param>
+        public void updateOrder(long orKey, statusOrder statO)
+        {
+            if (!dal.getOrderList().Any(ord1 => (ord1.OrderKey ==orKey)))
+                throw new System.ArgumentException("order is not exist");
+            if (statO != statusOrder.טרם_טופל && statO != statusOrder.נסגר_בהיענות_של_לקוח && statO != statusOrder.נסגר_מחוסר_הענות_של_הלקוח && statO != statusOrder.נשלח_מייל)
+                throw new System.ArgumentException("dont have a status");
+            dal.updateOrder(orKey, statO);
+        }
+        /// <summary>
+        /// a func that returns the order list
+        /// </summary>
+        /// <returns></returns>
+        public List<Order> getOrderList()
+        {
+            return dal.getOrderList();
+        }
+        /// <summary>
+        /// a func that returns the bank branch list
+        /// </summary>
+        /// <returns></returns>
+        public List<BankBranch> getBankBranches()
+        {
+            return dal.getBankBranches();
+        }
     }
 }

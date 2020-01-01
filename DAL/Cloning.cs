@@ -62,7 +62,7 @@ namespace DAL
             target.MailAddress = original.MailAddress;
             target.Pool = original.Pool;
             target.PrivateName = original.PrivateName;
-            target.RegistrationDate = target.RegistrationDate;
+            target.RegistrationDate = original.RegistrationDate;
             target.ReleaseDate = original.ReleaseDate;
             target.Status = original.Status;
             target.SubArea = original.SubArea;

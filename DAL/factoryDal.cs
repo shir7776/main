@@ -8,12 +8,14 @@ namespace DAL
 {
     public class FactoryDal
     {
-        //add singleton like bl
-            public static Idal getDal()
+        static Idal dal = null;
+        public static Idal getDal()
+        {
+            if(dal==null)
             {
-                return new Dal_imp();
+                dal = new Dal_imp();
             }
-
-       
+                return dal;
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace DAL
 
         #region order func
         void addOrder(Order ord);
-         void updateOrder(long orKey,statusOrder statO);
+        void updateOrder(long orKey,statusOrder statO);
         List<Order> getOrderList();
         #endregion
 

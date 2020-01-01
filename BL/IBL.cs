@@ -11,14 +11,14 @@ namespace BL
     public interface IBL//16
     {
         bool isDateValid(DateTime start, DateTime end);//(1)
-        bool allowedSendReq(Host host);//(2)
+        bool allowedSendReq(Order order);//(2)
         bool checkIfOk(GuestRequest gs, HostingUnit hu);//(3)
         bool CanChangeStatus(Order order);//(4)
         int calculateAmla(Order order);//(5)
         void updateDiary(Order order);//(6)
         void changeStatusOfOtherThings(Order order);//(7)
         bool cantDel(HostingUnit hu);//(8)
-        void cantCencelAllowens(GuestRequest gs);//(9)
+        bool canCencelAllowens(Host host);//(9)
         void sendEmailAfterStatusChange(Order order);//(10)
         List<HostingUnit> availableUnits(DateTime d, int numOfDays);//(11)
         int numOfDaysPassed(DateTime d1, DateTime? d2 = null);//(12)
@@ -26,25 +26,24 @@ namespace BL
         List<GuestRequest> guestWithCondition(GuestReqDelegate d);//(14)
         int numOfOrders(GuestRequest gs);//(15)
         int numOfClosedOrSentOrders(HostingUnit hostU);//(16
-        List<IGrouping<bool, GuestRequest>> groupGuestReqByArea(area a);//(17)
+        List<IGrouping<area, GuestRequest>> groupGuestReqByArea();//(17)
         List<IGrouping<int, GuestRequest>> groupByNumOfPeople();//(18)
-        List<IGrouping<int, HostingUnit>> groupByNumOfHostingUnits();//(19)
-        List<IGrouping<bool, HostingUnit>> groupHostUnitByArea(area a);//(20)
+        List<IGrouping<int, Host>> groupByNumOfHostingUnits();//(19)
+        List<IGrouping<area, HostingUnit>> groupHostUnitByArea();//(20)
 
 
 
 
-        void addGuestRequest(GuestRequest gs);//(21)
-        void addHostUnit(HostingUnit hostingUnit);//(22)
-        //void addOrder(Order order);//(23)
-        int calculatProfit(Host host);//(24)
-        int calculateTotalPriceForVication(Order order);//(25)
-        List<IGrouping<int, HostingUnit>> groupByNumOfRooms();//(26)
+        //int calculatProfit(Host host);//(21)
+        //int calculateTotalPriceForVication(Order order);//(22)
+        //List<IGrouping<int, HostingUnit>> groupByNumOfRooms();//(23)
+        //List<HostingUnit> availableForTomorrow();//(24)
+        //List<HostingUnit> byHost(Host host);//(25)
+        //
 
 
 
-
-        void addCustomerReq(GuestRequest gs);
+        void addCustomerReq(GuestRequest gs);//()
         void updateCustomerReq(long gsKey, statusGusReq stat);
         List<GuestRequest> getGuestRequestList();
         void addHostingUnit(HostingUnit hostunit);

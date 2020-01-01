@@ -13,5 +13,6 @@ namespace BE
         public static long hostUnitKey = 10000000;
         public static long orderKey = 10000000;
         public static int amla = 10;
+        public static int bankNumber = 0;
     }
 }

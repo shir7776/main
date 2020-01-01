@@ -47,6 +47,8 @@ namespace DAL
         /// <param name="stat"></param>
         public void updateCustomerReq(long gsKey, statusGusReq stat)
         {
+            if (!CheckGuestReq(gsKey))
+                throw new System.ArgumentException("request dont exist!");
             var new_gs = (from item in DS.DataSource.GuestRequestList
                                                where gsKey == item.GuestRequestKey
                                              select item).FirstOrDefault();
@@ -102,7 +104,7 @@ namespace DAL
             var new_hu = (from item in DS.DataSource.HostingUnitList
                           where item.HostingUnitKey == HstUnt.HostingUnitKey
                           select item).FirstOrDefault();
-            DS.DataSource.HostingUnitList.Remove(new_hu.Clone());
+            DS.DataSource.HostingUnitList.Remove(new_hu);
         }
         /// <summary>
         /// a func that updates hosting unit
@@ -187,14 +189,15 @@ namespace DAL
         /// <returns></returns>
         public List<BankBranch> getBankBranches()
         {
-            List<BankBranch> bank = new List<BankBranch> {
+            DS.DataSource.BankAccountList = new List<BankBranch> {
                 new BankBranch{ BankNumber=11,BankName="discont"},
                 new BankBranch{BankNumber=20,BankName="mizrachi"},
                 new BankBranch{BankNumber=12,BankName="hapohalim"},
                 new BankBranch{BankNumber=17,BankName="marcil discont"},
                 new BankBranch{BankNumber=10,BankName="leomi"}
             };
-            return bank;
+            return (from ba in DataSource.BankAccountList
+                    select ba.Clone()).ToList();
         }
     }
 }

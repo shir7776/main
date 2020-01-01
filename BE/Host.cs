@@ -26,7 +26,7 @@ namespace BE
                 string.Format("Mail Adress: {0}\n", MailAdress) +
                 string.Format("Bank Account: {0}\n", BankBranchDetails) +
                 string.Format("Num Of Hosting Unit: {0}\n", NumOfHostingUnit) +
-                string.Format("Collection Clearance: {0}\n", PrivateName);
+                string.Format("Collection Clearance: {0}\n", CollectionClearance);
         }
        
     }
